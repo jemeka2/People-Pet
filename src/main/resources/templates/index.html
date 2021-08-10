@@ -6,10 +6,31 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
-    <h2>Welcome Page</h2>
-    <p th:if="${message}">[[${message}]]</p>
-    <a th:href="@{/admin}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Admin Page</a>
-    <br>
+    <div th:replace="base :: navbar"></div>
+    <h1>Owners and Pets</h1>
+    <div th:each="owner: ${owners}">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${owner.name}"></h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:inline="text">Owner Age: [[${owner.age}]]</h6>
+                <ul>
+                    <th:block th:each="pet: ${owner.pets}">
+                        <li th:inline="text">
+                            [[${pet.petName}]] is a [[${pet.breed}]] and is [[${pet.petAge}]] years old
+                        </li>
+                        <li>
+                            <a th:href="@{/updatePet/{id}(id=${pet.id})}" class="card-link">Update</a>
+                            <a th:href="@{/deletePet/{id}(id=${pet.id})}" class="card-link">Delete</a>
+                        </li>
+                    </th:block>
+                </ul>
+                <a th:href="@{/updateOwner/{id}(id=${owner.id})}" class="card-link">Update</a>
+                <a th:href="@{/deleteOwner/{id}(id=${owner.id})}" class="card-link">Delete</a>
+            </div>
+        </div>
+
+
+    </div>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Logout">
     </form>

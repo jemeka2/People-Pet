@@ -21,6 +21,12 @@ public class Controller {
     RoleRepo roleRepo;
 
     @Autowired
+    OwnerRepo ownerRepo;
+
+    @Autowired
+    PetRepo petRepo;
+
+    @Autowired
     CloudinaryConfig cloudc;
 
     @RequestMapping("/secure")
@@ -53,9 +59,73 @@ public class Controller {
         return "index";
     }
     @RequestMapping("/")
-    public String listActors(){
+    public String index(Model model){
+        model.addAttribute("owners", ownerRepo.findAll());
         return "index";
     }
+
+    @GetMapping("/addOwner")
+    public String addOwner(Model model){
+        model.addAttribute("owner", new Owner());
+        return "ownerForm";
+    }
+
+    @RequestMapping("/updateOwner/{id}")
+    public String updateOwner(@PathVariable("id") long id, Model model){
+        model.addAttribute("owner", ownerRepo.findById(id).get());
+        return "ownerForm";
+    }
+
+    @RequestMapping("/deleteOwner/{id}")
+    public String delete(@PathVariable("id") long id){
+        ownerRepo.deleteById(id);
+        return "redirect:/";
+    }
+
+    @PostMapping("/processOwner")
+    public String processOwner(@ModelAttribute Owner owner){
+        ownerRepo.save(owner);
+        return "redirect:/";
+    }
+
+
+
+    @GetMapping("/addPet")
+    public String addPet(Model model){
+        model.addAttribute("pets", new Pet());
+        model.addAttribute("owners", ownerRepo.findAll());
+        return "petForm";
+    }
+
+    @RequestMapping("/updatePet/{id}")
+    public String updatePet(@PathVariable("id") long id, Model model){
+        model.addAttribute("owners", ownerRepo.findAll());
+        model.addAttribute("pets", petRepo.findById(id).get());
+        return "petForm";
+    }
+    @RequestMapping("/deletePet/{id}")
+    public String deleteMovie(@PathVariable("id") long id){
+        petRepo.deleteById(id);
+        return "redirect:/";
+    }
+
+    @PostMapping("/processPet")
+    public String processPet(@ModelAttribute Pet pet){
+        petRepo.save(pet);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/login")
+    public String login(){return "login";}
+
+    @RequestMapping("/admin")
+    public String admin(){return "admin";}
+
+    @RequestMapping("/logout")
+    public String logout(){
+        return "redirect:/login?logout=true";
+    }
+}
 
 
 //    @PostMapping("/add")
@@ -74,15 +144,3 @@ public class Controller {
 //        }
 //        return "redirect:/";
 //    }
-
-    @RequestMapping("/login")
-    public String login(){return "login";}
-
-    @RequestMapping("/admin")
-    public String admin(){return "admin";}
-
-    @RequestMapping("/logout")
-    public String logout(){
-        return "redirect:/login?logout=true";
-    }
-}

@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class CommandLineRunnerBean implements CommandLineRunner {
 
@@ -12,6 +15,9 @@ public class CommandLineRunnerBean implements CommandLineRunner {
 
     @Autowired
     RoleRepo roleRepo;
+
+    @Autowired
+    OwnerRepo ownerRepo;
 
     public void run(String...args){
         User user = new User("bart", "bart@domain.com", "bart", "Bart","Simpson", true);
@@ -26,6 +32,16 @@ public class CommandLineRunnerBean implements CommandLineRunner {
         userRepo.save(admin);
         roleRepo.save(adminRole1);
         roleRepo.save(adminRole2);
+
+        Owner owner = new Owner("Jabir Emeka", 18);
+        Pet pet = new Pet("Cacao", "Pitbull", 9, owner);
+
+        Set<Pet> pets = new HashSet<>();
+        pets.add(pet);
+
+        owner.setPets(pets);
+
+        ownerRepo.save(owner);
     }
 
 }
